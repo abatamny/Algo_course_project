@@ -1,5 +1,16 @@
 public class Main {
     public static void main(String[] args) {
+        InNode<Integer> root = new InNode<>(5);
+        InNode<Integer> l = new InNode<>(2);
+        InNode<Integer> m = new InNode<>(6);
+
+        (root).setLeft(l);
+        root.setRight(m);
+
+
+    }
+}/*
+    public static void main(String[] args) {
         try {
             ppr1();
         } catch (Exception e) {
@@ -27916,3 +27927,4 @@ public class Main {
     }
 
 }
+*/
