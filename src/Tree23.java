@@ -1,6 +1,5 @@
-import jdk.nashorn.api.tree.Tree;
 
-public class Tree23<K extends Comparable<K>, T> {
+public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
     private InNode<K> root;
     private final K minKey;
     private final K maxKey;
@@ -51,4 +50,40 @@ public class Tree23<K extends Comparable<K>, T> {
         return null;
     }
 
+    public void insert(T obj) {
+        Leaf<K, T> leaf = new Leaf<>(obj.getKey(), obj);
+        insertHelper(leaf);
+    }
+
+    private void insertHelper(Leaf<K,T> z){
+        Node<K> y = this.root;
+        // this loop used to find the leaf that has the next value.
+        while (y instanceof InNode<?>){
+            if(z.getKey().compareTo(((InNode<K>) y).getLeft().getKey())<0)
+                y = ((InNode<K>) y).getLeft();
+            else if(z.getKey().compareTo(((InNode<K>) y).getMiddle().getKey())<0)
+                y = ((InNode<K>) y).getMiddle();
+            else
+                y = ((InNode<K>) y).getRight();
+        }
+        // at this moment y refs to the leaf that we want to put z next to it.
+        Node<K> x = y.getParent();
+        // x is the subtree.
+
+        Node<K> temp; //of course its not a leaf.
+        temp = ((InNode<K>) x).insertAndSplit(z);
+
+        while (x != this.root){
+            x = x.getParent();
+            if (temp != null)
+                temp = ((InNode<K>) x).insertAndSplit(z);
+            else
+                ((InNode<K>) x).updateKey();
+        }
+        if(temp != null){
+            InNode<K> w = new InNode<>(null);
+            w.setChildren(x,temp,null);
+            this.root = w;
+        }
+    }
 }
