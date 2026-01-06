@@ -9,16 +9,18 @@ public class Queue<T> {
 
 
     private QNode<T> head;
-
+    private int size = 0;
     public void push(T k){
         QNode<T> newHead = new QNode<>(k);
         newHead.next = this.head;
         this.head = newHead;
+        this.size++;
     }
     public T pop(){
         if(head == null) throw new IllegalArgumentException("Empty Queue");
         T ret = this.head.obj;
         this.head = this.head.next;
+        this.size --;
         return ret;
     }
     public T next(){

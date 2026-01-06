@@ -17,9 +17,13 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         Leaf<K,T> m = new Leaf<>(this.maxKey);
         root.setChildren(l,m,null);
     }
-
+    public T getByKey(K key){
+        Leaf<K,T> l = leafSearch(key);
+        if(l != null)return l.obj();
+        return null;
+    }
     /* returns the object if founded, else null if not founded.*/
-    public Leaf<K, T> search(K key){
+    private Leaf<K, T> leafSearch(K key){
         Node<K> y = this.root;
         while (y instanceof InNode) {
             InNode<K> _y = (InNode<K>) y;
@@ -42,23 +46,7 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         }
         return null;
     }
-    private Node<K> searchHelper(Node<K> x, K key){
-        if (x instanceof Leaf){
-            if(x.getKey() == key) return x;
-            else return null;
-        }
 
-        InNode<K> inX  = (InNode<K>) x;
-
-        if (key.compareTo(inX.getLeft().getKey()) <= 0)
-            return searchHelper(inX.getLeft(), key);
-
-        else if (key.compareTo(inX.getMiddle().getKey()) <= 0)
-            return searchHelper(inX.getMiddle(), key);
-
-        else return searchHelper(inX.getRight(), key);
-
-    }
 
     public T minimum(){
         Node<K> x = this.root;
@@ -180,7 +168,7 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         }
     }
     public void delete(K key){
-        Leaf<K,T> leaf = search(key);
+        Leaf<K,T> leaf = leafSearch(key);
         if(leaf == null)
             throw new IllegalArgumentException("the key '" + key + "' does not exists.");
 
