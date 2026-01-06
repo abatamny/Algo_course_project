@@ -1,39 +1,28 @@
 public class Main {
-    public static class Nody implements Nodeable<String>{
+    public static class Nody implements Nodeable<String> {
         private String key;
-        public Nody(String key){
+
+        public Nody(String key) {
             this.key = key;
         }
+
         @Override
-        public String getKey(){return key;}
+        public String getKey() {
+            return key;
+        }
 
-        public void setKey(String key){this.key = key;}
+        public void setKey(String key) {
+            this.key = key;
+        }
     }
+
+
+
     public static void main(String[] args) {
-        Tree23<String,Nody> myTree = new Tree23<>("", "\uFFFF\uFFFF\uFFFF\uFFFF");
-        for(char c = 'a'; c<='z'; c+=4 )
-            myTree.insert(new Nody(c + ""));
-        for(char c = 'b'; c <= 'z'; c+=2 )
-            myTree.insert(new Nody(c + ""));
-
-
-
-        try {
-            myTree.insert(new Nody("a"));
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+        Queue<String> q = new Queue<>();
+        for(char c = '1'; c < '9'; c++){
+            q.push(c+"");
         }
-        try{
-            myTree.delete("f");
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        try {
-            myTree.insert(new Nody("a"));
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-
     }
 }/*
     public static void main(String[] args) {

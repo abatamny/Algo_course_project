@@ -1,5 +1,7 @@
 
 public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
+
+
     private InNode<K> root;
     private final K minKey;
     private final K maxKey;
