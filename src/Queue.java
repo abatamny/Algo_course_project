@@ -16,11 +16,13 @@ public class Queue<T> {
         this.head = newHead;
     }
     public T pop(){
+        if(head == null) throw new IllegalArgumentException("Empty Queue");
         T ret = this.head.obj;
         this.head = this.head.next;
         return ret;
     }
     public T next(){
+        if(head == null) throw new IllegalArgumentException("Empty Queue");
         return this.head.obj;
     }
 }
