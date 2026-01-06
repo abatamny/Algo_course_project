@@ -19,7 +19,7 @@ public class InNode<T extends Comparable<T>> extends Node<T>{
         if(this.middle != null)
             key = this.middle.getKey();
         if(this.right != null)
-            key = this.middle.getKey();
+            key = this.right.getKey();
 
         this.setKey(key);
     }

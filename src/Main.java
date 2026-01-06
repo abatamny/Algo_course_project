@@ -1,6 +1,21 @@
 public class Main {
-    public static void main(String[] args) {
+    public static class Nody implements Nodeable<String>{
+        private String key;
+        public Nody(String key){
+            this.key = key;
+        }
+        @Override
+        public String getKey(){return key;}
 
+        public void setKey(String key){this.key = key;}
+    }
+    public static void main(String[] args) {
+        Tree23<String,Nody> myTree = new Tree23<>("", "\uFFFF\uFFFF\uFFFF\uFFFF");
+        for(char c = 'z'; c>='s'; c-- )
+            myTree.insert(new Nody(c + ""));
+
+        for(char c = 'a'; c<'s'; c++ )
+            myTree.insert(new Nody(c + ""));
 
 
     }

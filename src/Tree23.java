@@ -10,9 +10,10 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         this.init();
     }
     private void init(){
-        root = new InNode<K>(maxKey);
-        InNode<K> l = new InNode<>(minKey);
-        InNode<K> m = new InNode<>(maxKey);
+        root = new InNode<K>(null);
+        Leaf<K,T> l = new Leaf<>(this.minKey);
+        Leaf<K,T> m = new Leaf<>(this.maxKey);
+        root.setChildren(l,m,null);
     }
 
     /* returns the object if founded, else null if not founded.*/
@@ -76,7 +77,7 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         while (x != this.root){
             x = x.getParent();
             if (temp != null)
-                temp = ((InNode<K>) x).insertAndSplit(z);
+                temp = ((InNode<K>) x).insertAndSplit(temp);
             else
                 ((InNode<K>) x).updateKey();
         }
