@@ -11,17 +11,29 @@ public class Main {
     }
     public static void main(String[] args) {
         Tree23<String,Nody> myTree = new Tree23<>("", "\uFFFF\uFFFF\uFFFF\uFFFF");
-        for(char c = 'z'; c>='s'; c-- )
+        for(char c = 'a'; c<='z'; c+=4 )
+            myTree.insert(new Nody(c + ""));
+        for(char c = 'b'; c <= 'z'; c+=2 )
             myTree.insert(new Nody(c + ""));
 
-        for(char c = 'a'; c<'s'; c++ )
-            myTree.insert(new Nody(c + ""));
+
 
         try {
             myTree.insert(new Nody("a"));
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
+        try{
+            myTree.delete("f");
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        try {
+            myTree.insert(new Nody("a"));
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }/*
     public static void main(String[] args) {

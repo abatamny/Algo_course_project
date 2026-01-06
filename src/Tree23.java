@@ -17,10 +17,27 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
     }
 
     /* returns the object if founded, else null if not founded.*/
-    public T search(K key){
-        Node<K> x = root;
-        Node<K> res = searchHelper(x, key);
-        if(res != null) return ((Leaf<K,T>)res).obj();
+    public Leaf<K, T> search(K key){
+        Node<K> y = this.root;
+        while (y instanceof InNode) {
+            InNode<K> _y = (InNode<K>) y;
+            if (key.compareTo(_y.getLeft().getKey()) <= 0) {
+                if (key.equals(_y.getLeft().getKey())){
+                    if(_y.getLeft() instanceof Leaf) return (Leaf<K,T>)_y.getLeft();
+                }
+                y = _y.getLeft();
+            } else if ((key.compareTo(_y.getMiddle().getKey()) <= 0)){
+                if (key.equals(_y.getMiddle().getKey()))
+                    if(_y.getMiddle() instanceof Leaf) return (Leaf<K,T>)_y.getMiddle();
+                y = _y.getMiddle();
+            }
+            else {
+                if (key.equals(_y.getRight().getKey()))
+                    if(_y.getRight() instanceof Leaf) return (Leaf<K,T>)_y.getRight();
+                y = _y.getRight();
+
+            }
+        }
         return null;
     }
     private Node<K> searchHelper(Node<K> x, K key){
@@ -47,7 +64,7 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
             x = ((InNode<K>) x).getLeft();
 
         //that beacause the min key in the tree is -inf.
-        x = ((InNode<K>) x.getParent()).getMiddle();
+        x = x.getParent().getMiddle();
         if(x.getKey() != maxKey)
             return ((Leaf<K,T>) x).obj();
         return null;
@@ -77,18 +94,18 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         }
 
         // at this moment y refs to the leaf that we want to put z next to it.
-        Node<K> x = y.getParent();
+        InNode<K> x = y.getParent();
         // x is the subtree.
 
         Node<K> temp; //of course its not a leaf.
-        temp = ((InNode<K>) x).insertAndSplit(z);
+        temp = x.insertAndSplit(z);
 
         while (x != this.root){
             x = x.getParent();
             if (temp != null)
-                temp = ((InNode<K>) x).insertAndSplit(temp);
+                temp = x.insertAndSplit(temp);
             else
-                ((InNode<K>) x).updateKey();
+                x.updateKey();
         }
         if(temp != null){
             InNode<K> w = new InNode<>(null);
@@ -96,4 +113,77 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
             this.root = w;
         }
     }
+
+    private InNode<K> borrowOrMerge(InNode<K> y){
+        InNode<K> x, z = y.getParent();
+        if(y == z.getLeft()){
+            x = (InNode<K>)z.getMiddle();
+            if (x.getRight() != null){
+                y.setChildren(y.getLeft(), x.getLeft(),null);
+                x.setChildren(x.getMiddle(), x.getRight(),null);
+            }
+            else{
+                x.setChildren(y.getLeft(), x.getLeft(), x.getMiddle());
+                z.setChildren(x,z.getRight(),null);
+            }
+            return z;
+        }
+        if(y == z.getMiddle()){
+            x = (InNode<K>)z.getLeft();
+            if (x.getRight() != null){
+                y.setChildren(x.getRight(), y.getLeft(), null);
+                x.setChildren(x.getLeft(), x.getMiddle(), null);
+            }
+            else{
+                x.setChildren(x.getLeft(), x.getMiddle(), y.getLeft());
+                z.setChildren(x, z.getRight(), null);
+            }
+            return z;
+        }
+        x = (InNode<K>) z.getMiddle();
+        if(x.getRight() != null){
+            y.setChildren(x.getRight(), y.getLeft(), null);
+            x.setChildren(x.getLeft(), x.getMiddle(),null);
+        }
+        else{
+            x.setChildren(x.getLeft(), x.getMiddle(),y.getLeft());
+            z.setChildren(z.getLeft(), x, null);
+        }
+        return z;
+    }
+    public void deleteLeaf(Leaf<K,T> x){
+        InNode<K> y = x.getParent();
+        if(x == y.getLeft())
+            y.setChildren(y.getMiddle(), y.getRight(), null);
+        else if(x == y.getMiddle())
+            y.setChildren(y.getLeft(), y.getRight(), null);
+        else
+            y.setChildren(y.getLeft(), y.getMiddle(), null);
+
+        while (y != null){
+            if(y.getMiddle() != null){
+                y.updateKey();
+                y = y.getParent();
+            }
+            else{
+                if(y != this.root){
+                    y = borrowOrMerge(y);
+                }
+                else{
+                    this.root = (InNode<K>)(y.getLeft());
+                    this.root.setParent(null);
+                    return;
+                }
+            }
+        }
+    }
+    public void delete(K key){
+        Leaf<K,T> leaf = search(key);
+        if(leaf == null)
+            throw new IllegalArgumentException("the key '" + key + "' does not exists.");
+
+        deleteLeaf(leaf);
+    }
 }
+
+
