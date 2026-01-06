@@ -45,28 +45,37 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         Node<K> x = this.root;
         while (x instanceof InNode<?>)
             x = ((InNode<K>) x).getLeft();
+
+        //that beacause the min key in the tree is -inf.
         x = ((InNode<K>) x.getParent()).getMiddle();
         if(x.getKey() != maxKey)
             return ((Leaf<K,T>) x).obj();
         return null;
     }
 
-    public void insert(T obj) {
-        Leaf<K, T> leaf = new Leaf<>(obj.getKey(), obj);
-        insertHelper(leaf);
-    }
-
-    private void insertHelper(Leaf<K,T> z){
+    public void insert(T obj){
+        Leaf<K, T> z = new Leaf<>(obj.getKey(), obj);
         Node<K> y = this.root;
         // this loop used to find the leaf that has the next value.
-        while (y instanceof InNode<?>){
-            if(z.getKey().compareTo(((InNode<K>) y).getLeft().getKey())<0)
+        while (y instanceof InNode<?>) {
+            InNode<K> _y = (InNode<K>) y;
+            if (z.compareTo(_y.getLeft()) <= 0) {
+                if (z.equals(_y.getLeft()))
+                    throw new IllegalArgumentException("Element already exists");
                 y = ((InNode<K>) y).getLeft();
-            else if(z.getKey().compareTo(((InNode<K>) y).getMiddle().getKey())<0)
-                y = ((InNode<K>) y).getMiddle();
-            else
-                y = ((InNode<K>) y).getRight();
+            } else if (z.compareTo(_y.getMiddle()) <= 0) {
+                if (z.equals(_y.getMiddle()))
+                    throw new IllegalArgumentException("Element already exists");
+                y = _y.getMiddle();
+            }
+            else {
+                if (z.equals(_y.getRight()))
+                    throw new IllegalArgumentException("Element already exists");
+                y = _y.getRight();
+
+            }
         }
+
         // at this moment y refs to the leaf that we want to put z next to it.
         Node<K> x = y.getParent();
         // x is the subtree.

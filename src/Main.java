@@ -17,7 +17,11 @@ public class Main {
         for(char c = 'a'; c<'s'; c++ )
             myTree.insert(new Nody(c + ""));
 
-
+        try {
+            myTree.insert(new Nody("a"));
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }/*
     public static void main(String[] args) {

@@ -39,9 +39,9 @@ public class InNode<T extends Comparable<T>> extends Node<T>{
         r = this.right;
 
         if(r == null){
-            if(z.getKey().compareTo(l.getKey()) < 0)
+            if(z.compareTo(l) < 0)
                 setChildren(z,l,m);
-            else if(z.getKey().compareTo(m.getKey()) < 0)
+            else if(z.compareTo(m) < 0)
                 setChildren(l,z,m);
             else
                 setChildren(l,m,z);
@@ -49,20 +49,20 @@ public class InNode<T extends Comparable<T>> extends Node<T>{
         }
 
         InNode<T> y = new InNode<>(null);
-        if(z.getKey().compareTo(l.getKey()) < 0){
+        if(z.compareTo(l) < 0){
             this.setChildren(z,l,null);
             y.setChildren(m,r,null);
         }
-        else if(z.getKey().compareTo(m.getKey()) < 0){
-            setChildren(l,z,null);
+        else if(z.compareTo(m) < 0){
+            this.setChildren(l,z,null);
             y.setChildren(m,r,null);
         }
-        else if(z.getKey().compareTo(r.getKey()) < 0){
-            setChildren(l,m,null);
+        else if(z.compareTo(r) < 0){
+            this.setChildren(l,m,null);
             y.setChildren(z,r,null);
         }
         else{
-            setChildren(l,m,null);
+            this.setChildren(l,m,null);
             y.setChildren(r,z,null);
         }
         return y;
