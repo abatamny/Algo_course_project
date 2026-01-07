@@ -16,13 +16,6 @@ public class Waitings implements Nodeable<Integer>, Insertable {
     @Override
     public int getWeight(){return numOfRooms;}
 
-    public void removeRoom(){
-        this.numOfRooms--;
-    }
-    public void addRoom(){
-        this.numOfRooms++;
-    }
-
     public void insert(){
         numOfRooms++;
     }

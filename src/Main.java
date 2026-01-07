@@ -2,20 +2,98 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        ClinicManager c = new ClinicManager();
-        for(int num = 1; num <= 10; num++)
-            c.doctorEnter("doc"+num);
-        Random rand = new Random();
-        for(int i = 1; i <= 10; i++){
-            int x  = rand.nextInt(20);
-            for(; x > 0; x--){
-                c.patientEnter("doc"+i, "pat"+i+x);
-            }
-        }
-
-
-        int res = c.numDoctorsWithLoadInRange(2,4);
+       ppr4();
     }
+
+    static void ppr3() {
+        System.out.println("--- PPR3 ---");
+        ClinicManager cm = new ClinicManager();
+        StringBuilder sb = new StringBuilder();
+
+        cm.doctorEnter("D1");
+        sb.append("doctorEnter D1, ");
+        cm.patientEnter("D1", "P11");
+        sb.append("patientEnter D1 P11, ");
+        cm.patientEnter("D1", "P12");
+        sb.append("patientEnter D1 P12, ");
+        cm.patientEnter("D1", "P13");
+        sb.append("patientEnter D1 P13, ");
+        cm.doctorEnter("D2");
+        sb.append("doctorEnter D2, ");
+        cm.patientEnter("D2", "P21");
+        sb.append("patientEnter D2 P21, ");
+        cm.patientEnter("D2", "P22");
+        sb.append("patientEnter D2 P22, ");
+        cm.patientEnter("D2", "P23");
+        sb.append("patientEnter D2 P23, ");
+        cm.doctorEnter("D3");
+        sb.append("doctorEnter D3, ");
+        cm.patientEnter("D3", "P31");
+        sb.append("patientEnter D3 P31, ");
+        cm.patientEnter("D3", "P32");
+        sb.append("patientEnter D3 P32, ");
+        cm.patientEnter("D3", "P33");
+        sb.append("patientEnter D3 P33, ");
+        cm.doctorEnter("D4");
+        sb.append("doctorEnter D4, ");
+        cm.patientEnter("D4", "P41");
+        sb.append("patientEnter D4 P41, ");
+        cm.patientEnter("D4", "P42");
+        sb.append("patientEnter D4 P42, ");
+        cm.patientEnter("D4", "P43");
+        sb.append("patientEnter D4 P43, ");
+        int res1 = cm.numDoctorsWithLoadInRange(3, 3); sb.append("numDoctorsWithLoadInRange 3 3 -> ").append(res1).append(", ");
+        int res2 = cm.averageLoadWithinRange(3, 3); sb.append("averageLoadWithinRange 3 3 -> ").append(res2);
+
+        String result = sb.toString();
+        if (result.endsWith(", ")) result = result.substring(0, result.length()-2);
+        System.out.println(result);
+    }
+
+    static void ppr4() {
+        System.out.println("--- PPR4 ---");
+        ClinicManager cm = new ClinicManager();
+        StringBuilder sb = new StringBuilder();
+
+        cm.doctorEnter("D1");
+        cm.patientEnter("D1", "P1");
+        sb.append("doctorEnter D1, patientEnter D1 P1, ");
+        cm.doctorEnter("D2");
+        cm.patientEnter("D2", "P2");
+        sb.append("doctorEnter D2, patientEnter D2 P2, ");
+        cm.doctorEnter("D3");
+        cm.patientEnter("D3", "P3");
+        sb.append("doctorEnter D3, patientEnter D3 P3, ");
+        cm.doctorEnter("D4");
+        cm.patientEnter("D4", "P4");
+        sb.append("doctorEnter D4, patientEnter D4 P4, ");
+        cm.doctorEnter("D5");
+        cm.patientEnter("D5", "P5");
+        sb.append("doctorEnter D5, patientEnter D5 P5, ");
+        cm.doctorEnter("D6");
+        cm.patientEnter("D6", "P6");
+        sb.append("doctorEnter D6, patientEnter D6 P6, ");
+        cm.doctorEnter("D7");
+        cm.patientEnter("D7", "P7");
+        sb.append("doctorEnter D7, patientEnter D7 P7, ");
+        cm.doctorEnter("D8");
+        cm.patientEnter("D8", "P8");
+        sb.append("doctorEnter D8, patientEnter D8 P8, ");
+        cm.doctorEnter("D9");
+        cm.patientEnter("D9", "P9");
+        sb.append("doctorEnter D9, patientEnter D9 P9, ");
+        cm.doctorEnter("D10");
+        cm.patientEnter("D10", "P10");
+        sb.append("doctorEnter D10, patientEnter D10 P10, ");
+        int res1 = cm.numDoctorsWithLoadInRange(1, 1); sb.append("numDoctorsWithLoadInRange 1 1 -> ").append(res1).append(", ");
+        int res2 = cm.averageLoadWithinRange(0, 10); sb.append("averageLoadWithinRange 0 10 -> ").append(res2);
+
+        String result = sb.toString();
+        if (result.endsWith(", ")) result = result.substring(0, result.length()-2);
+        System.out.println(result);
+    }
+
+
 }/*
     public static void main(String[] args) {
         try {
