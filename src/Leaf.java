@@ -14,6 +14,6 @@ public class Leaf<T extends Comparable<T>,O extends Nodeable<T>> extends Node<T>
     public O obj(){return this.obj;}
 
     @Override
-    public InNode<T> getParent() {return (InNode<T>) super.getParent();}
+    public InNode<T> getParent() {return super.getParent();}
 }
 

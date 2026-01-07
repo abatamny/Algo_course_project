@@ -19,4 +19,5 @@ public class Doctor implements Nodeable<String> {
     }
     public Patient nextPatientLeave(){return wd.pop();}
     public int waitingNum(){return wd.getSize();}
+
 }

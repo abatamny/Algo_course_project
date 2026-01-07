@@ -19,23 +19,26 @@ public class InNode<T extends Comparable<T>> extends Node<T>{
     public void updateKey(){
         T key = null;
         int w = 0;
+        int size = 1;
         if(this.left != null) {
             key = this.left.getKey();
             w += this.left.getWeight();
+            size+= this.left.getSize();
         }
         if(this.middle != null) {
             key = this.middle.getKey();
             w += this.middle.getWeight();
+            size += this.middle.getSize();
         }
         if(this.right != null) {
             key = this.right.getKey();
             w += this.right.getWeight();
+            size += this.right.getSize();
         }
 
         this.setKey(key);
         this.setWeight(w);
-
-
+        this.setSize(size);
     }
     public void setChildren(Node<T>l, Node<T>m, Node<T>r){
         this.left = l;

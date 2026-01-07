@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Main {
     public static class Nody implements Nodeable<String> {
         private String key;
@@ -22,8 +24,18 @@ public class Main {
 
     public static void main(String[] args) {
         ClinicManager c = new ClinicManager();
-        for(int num = 0; num < 500; num++)
+        for(int num = 1; num <= 10; num++)
             c.doctorEnter("doc"+num);
+        Random rand = new Random();
+        for(int i = 1; i <= 10; i++){
+            int x  = rand.nextInt(20);
+            for(; x > 0; x--){
+                c.patientEnter("doc"+i, "pat"+i+x);
+            }
+        }
+
+
+        int res = c.numDoctorsWithLoadInRange(2,4);
     }
 }/*
     public static void main(String[] args) {

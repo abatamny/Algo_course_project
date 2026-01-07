@@ -14,7 +14,11 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
     private void init(){
         root = new InNode<K>(null);
         Leaf<K,T> l = new Leaf<>(this.minKey);
+        l.setSize(0);
+
         Leaf<K,T> m = new Leaf<>(this.maxKey);
+        m.setSize(0);
+
         root.setChildren(l,m,null);
     }
     public T getByKey(K key){
@@ -48,45 +52,41 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
     }
 
 
-    public T minimum(){
-        Node<K> x = this.root;
-        while (x instanceof InNode<?>)
-            x = ((InNode<K>) x).getLeft();
-
-        //that beacause the min key in the tree is -inf.
-        x = x.getParent().getMiddle();
-        if(x.getKey() != maxKey)
-            return ((Leaf<K,T>) x).obj();
-        return null;
-    }
-
     public void insert(T obj){
         Leaf<K, T> z = new Leaf<>(obj.getKey(), obj);
         Node<K> y = this.root;
         // this loop used to find the leaf that has the next value.
-        while (y instanceof InNode<?>) {
+        while (y instanceof InNode) {
             InNode<K> _y = (InNode<K>) y;
-            if (z.compareTo(_y.getLeft()) <= 0) {
-                if (z.equals(_y.getLeft()))
-                    throw new IllegalArgumentException("Element already exists");
-                y = ((InNode<K>) y).getLeft();
-            } else if (z.compareTo(_y.getMiddle()) <= 0) {
-                if (z.equals(_y.getMiddle()))
-                    throw new IllegalArgumentException("Element already exists");
-                y = _y.getMiddle();
-            }
-            else {
-                if (z.equals(_y.getRight()))
-                    throw new IllegalArgumentException("Element already exists");
-                y = _y.getRight();
 
-            }
+            if (z.compareTo(_y.getLeft()) <= 0)
+                y = _y.getLeft();
+
+            else if (z.compareTo(_y.getMiddle()) <= 0)
+                y = _y.getMiddle();
+
+            else
+                y = _y.getRight();
         }
 
-        // at this moment y refs to the leaf that we want to put z next to it.
+
+
         InNode<K> x = y.getParent();
         // x is the subtree.
-
+        // at this moment y refs to the leaf that we want to put z next to it.
+        if(y.getKey().equals(obj.getKey())){
+            if( ((Leaf<K,T>) y).obj() instanceof Insertable ) {
+                ((Insertable) ((Leaf<K, T>) y).obj()).insert();
+                y.setWeight(y.getWeight()+1);
+                while(x != null){
+                    x.setWeight(x.getWeight()+1);
+                    x = x.getParent();
+                }
+                return;
+            }
+            else
+                throw new IllegalArgumentException("this element already exists.");
+        }
         Node<K> temp; //of course its not a leaf.
         temp = x.insertAndSplit(z);
 
@@ -141,11 +141,21 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         }
         return z;
     }
-    public void deleteLeaf(Leaf<K,T> x){
-        InNode<K> y = x.getParent();
-        if(x == y.getLeft())
+    public void deleteLeaf(Leaf<K,T> leaf){
+        Node<K> x = leaf;
+        if(leaf.obj() instanceof Insertable)
+            if (leaf.obj().getWeight() > 1){
+                ((Insertable) leaf.obj()).remove();
+                while(x != null){
+                    x.setWeight(x.getWeight()-1);
+                    x = x.getParent();
+                }
+                return;
+            }
+        InNode<K> y = leaf.getParent();
+        if(leaf == y.getLeft())
             y.setChildren(y.getMiddle(), y.getRight(), null);
-        else if(x == y.getMiddle())
+        else if(leaf == y.getMiddle())
             y.setChildren(y.getLeft(), y.getRight(), null);
         else
             y.setChildren(y.getLeft(), y.getMiddle(), null);
@@ -172,8 +182,69 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         if(leaf == null)
             throw new IllegalArgumentException("the key '" + key + "' does not exists.");
 
+
         deleteLeaf(leaf);
     }
+
+    public int weightInRange(K min, K max){
+        int weight = this.root.getWeight();
+        Node<K> maxP = this.root, minP = this.root;
+        while(maxP instanceof InNode){
+            InNode<K> p = (InNode<K>) maxP;
+            if(p.getLeft() != null){
+                if(max.compareTo(p.getLeft().getKey()) <= 0) {
+                    maxP = p.getLeft();
+                    if(p.getMiddle() != null)
+                        weight -= p.getMiddle().getWeight();
+                    if(p.getRight() != null)
+                        weight -= p.getRight().getWeight();
+                    continue;
+                }
+            }
+            if(p.getMiddle() != null){
+                if(max.compareTo(p.getMiddle().getKey()) <= 0) {
+                    maxP = p.getMiddle();
+                    if(p.getRight() != null)
+                        weight -= (p.getRight().getWeight());
+                    if(maxP instanceof Leaf)
+                        weight -= maxP.getWeight();
+                    continue;
+                }
+            }
+
+            if(p.getRight() != null){
+                maxP = p.getRight();
+                if(maxP instanceof Leaf && max.compareTo(maxP.getKey()) < 0)
+                    weight -= maxP.getWeight();
+            }
+            else if(p.getMiddle() != null)
+                maxP = p.getMiddle();
+            else
+                maxP = p.getLeft();
+        }
+        while(minP instanceof InNode){
+            InNode<K> p = (InNode<K>) minP;
+            if(p.getRight()!=null){
+                if(p.getRight().getKey().compareTo(min) <= 0){
+                    minP = p.getRight();
+                    weight -= (p.getMiddle().getWeight() + p.getLeft().getWeight());
+                    continue;
+                }
+            }
+            if(p.getMiddle() != null){
+                if(p.getMiddle().getKey().compareTo(min) <= 0){
+                    minP = p.getMiddle();
+                    weight -= (p.getLeft().getWeight());
+                    continue;
+                }
+            }
+            if(p.getLeft() != null){
+                minP = p.getLeft();
+            }
+        }
+        return weight;
+    }
+
 }
 
 
