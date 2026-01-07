@@ -93,6 +93,6 @@ public class ClinicManager {
     }
 
     public int averageLoadWithinRange(int low, int high) {
-        return 0;
+        return (int) waitings.averageValueInRange(low, high);
     }
 }

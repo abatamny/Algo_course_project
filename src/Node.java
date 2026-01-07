@@ -3,8 +3,8 @@ public abstract class Node<T extends Comparable<T>>
     private T key;
     private int weight = 0;
     private Node<T> parent;
-
     private int size = 0;
+    private float value = 0;
 
     public Node(T key){
         this.key = key;
@@ -21,6 +21,10 @@ public abstract class Node<T extends Comparable<T>>
 
     public int getSize(){return this.size;}
     public void setSize(int size){this.size = size;}
+
+    public float getValue(){return this.value;}
+    public void setValue(float v){this.value = v;}
+
     @Override
     public int compareTo(Node<T> other){
         int compareRes = this.key.compareTo(other.key);

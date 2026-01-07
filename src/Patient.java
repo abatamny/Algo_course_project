@@ -15,4 +15,6 @@ public class Patient implements Nodeable<String> {
     public String getKey(){return PID;}
     @Override
     public int getWeight(){return 1;}
+    @Override
+    public float getValue(){return 0;}
 }

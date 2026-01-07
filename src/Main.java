@@ -1,27 +1,6 @@
 import java.util.Random;
 
 public class Main {
-    public static class Nody implements Nodeable<String> {
-        private String key;
-
-        public Nody(String key) {
-            this.key = key;
-        }
-
-        @Override
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-        @Override
-        public int getWeight(){return 1;}
-    }
-
-
-
     public static void main(String[] args) {
         ClinicManager c = new ClinicManager();
         for(int num = 1; num <= 10; num++)

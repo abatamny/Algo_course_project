@@ -30,4 +30,7 @@ public class Waitings implements Nodeable<Integer>, Insertable {
         numOfRooms--;
     }
 
+    @Override
+    public float getValue(){return numOfWaiting*numOfRooms;}
+
 }

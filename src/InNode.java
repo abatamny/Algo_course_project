@@ -11,34 +11,34 @@ public class InNode<T extends Comparable<T>> extends Node<T>{
     public Node<T> getMiddle(){return this.middle;}
 
 
-
-    public void setRight(Node<T> r) {this.right = r;}
-    public void setMiddle(Node<T> m) {this.middle = m;}
-    public void setLeft(InNode<T> l) {this.left = l;}
-
     public void updateKey(){
         T key = null;
         int w = 0;
-        int size = 1;
+        int size = 0;
+        int value = 0;
         if(this.left != null) {
             key = this.left.getKey();
             w += this.left.getWeight();
             size+= this.left.getSize();
+            value += this.left.getValue();
         }
         if(this.middle != null) {
             key = this.middle.getKey();
             w += this.middle.getWeight();
             size += this.middle.getSize();
+            value += this.middle.getValue();
         }
         if(this.right != null) {
             key = this.right.getKey();
             w += this.right.getWeight();
             size += this.right.getSize();
+            value += this.right.getValue();
         }
 
         this.setKey(key);
         this.setWeight(w);
         this.setSize(size);
+        this.setValue(value);
     }
     public void setChildren(Node<T>l, Node<T>m, Node<T>r){
         this.left = l;

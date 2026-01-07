@@ -1,4 +1,4 @@
-public class Queue<T> implements Nodeable<Integer> {
+public class Queue<T>{
     public class QNode<T>  {
         private T obj;
         public QNode<T> next = null;
@@ -53,11 +53,4 @@ public class Queue<T> implements Nodeable<Integer> {
     public int getSize() {
         return this.size;
     }
-
-    @Override
-    public Integer getKey() {
-        return this.size;
-    }
-    @Override
-    public int getWeight(){return 1;}
 }
