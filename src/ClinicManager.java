@@ -24,7 +24,7 @@ public class ClinicManager {
         if(doc == null) throw new IllegalArgumentException("the doctorid does not exist.");
 
         Patient p = new Patient(patientId, doc);
-
+        doc.enterPatient(p);
         patients.insert(p);//log(P)
 
     }
@@ -39,18 +39,30 @@ public class ClinicManager {
     public void patientLeaveEarly(String patientId) {
         Patient p = patients.getByKey(patientId);
         if(p == null) throw new IllegalArgumentException("patient does not exists.");
+        p.getPlace().takeoff();//O(1) remove from the waiting queue.
+        patients.delete(p.getKey());//O(log(P)
     }
 
-    public int numPatients(String doctorId) {
-        return 0;
+    public int numPatients(String doctorId){
+        Doctor doc = doctors.getByKey(doctorId);//log(D)
+        if(doc == null) throw new IllegalArgumentException("the doctorid does not exist.");
+        return doc.waitingNum();
     }
 
     public String nextPatient(String doctorId) {
-        return null;
+        Doctor doc = doctors.getByKey(doctorId);//log(D)
+        if(doc == null) throw new IllegalArgumentException("the doctorid does not exist.");
+        try {
+            return doc.nextPatient().getKey();
+        }catch (Exception e){
+            throw new IllegalArgumentException("no patients waiting");
+        }
     }
 
     public String waitingForDoctor(String patientId) {
-        return null;
+        Patient p = patients.getByKey(patientId);
+        if(p == null) throw new IllegalArgumentException("patient does not exists.");
+        return p.getDoctor().getKey();
     }
 
     public int numDoctorsWithLoadInRange(int low, int high) {

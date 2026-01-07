@@ -14,15 +14,16 @@ public class Main {
         public void setKey(String key) {
             this.key = key;
         }
+        @Override
+        public int getWeight(){return 1;}
     }
 
 
 
     public static void main(String[] args) {
-        Queue<String> q = new Queue<>();
-        for(char c = '1'; c < '9'; c++){
-            q.push(c+"");
-        }
+        ClinicManager c = new ClinicManager();
+        for(int num = 0; num < 500; num++)
+            c.doctorEnter("doc"+num);
     }
 }/*
     public static void main(String[] args) {
