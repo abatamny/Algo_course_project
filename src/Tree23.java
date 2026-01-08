@@ -213,33 +213,40 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
 
             if(p.getRight() != null){
                 maxP = p.getRight();
-                if(maxP instanceof Leaf && max.compareTo(maxP.getKey()) < 0)
-                    weight -= maxP.getWeight();
             }
             else if(p.getMiddle() != null)
                 maxP = p.getMiddle();
             else
                 maxP = p.getLeft();
+
+            if(maxP instanceof Leaf && max.compareTo(maxP.getKey()) < 0)
+                    weight -= maxP.getWeight();
         }
         while(minP instanceof InNode){
             InNode<K> p = (InNode<K>) minP;
-            if(p.getRight()!=null){
-                if(p.getRight().getKey().compareTo(min) <= 0){
-                    minP = p.getRight();
-                    weight -= (p.getMiddle().getWeight() + p.getLeft().getWeight());
+            if(p.getLeft()!= null){
+                if(min.compareTo(p.getLeft().getKey()) <= 0){
+                    minP = p.getLeft();
                     continue;
                 }
             }
-            if(p.getMiddle() != null){
-                if(p.getMiddle().getKey().compareTo(min) <= 0){
+            if(p.getMiddle()!=null){
+                if(min.compareTo(p.getMiddle().getKey()) <= 0){
                     minP = p.getMiddle();
                     weight -= (p.getLeft().getWeight());
                     continue;
                 }
             }
-            if(p.getLeft() != null){
-                minP = p.getLeft();
+            if(p.getRight()!=null){
+                if(min.compareTo(p.getRight().getKey()) <= 0){
+                    minP = p.getRight();
+                    weight -= (p.getLeft().getWeight() + p.getMiddle().getWeight());
+                    continue;
+                }
             }
+            weight -= p.getWeight();
+            break;
+            
         }
         return weight;
     }
@@ -264,6 +271,10 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
                         value -= p.getRight().getValue();
                         weight -= p.getRight().getWeight();
                     }
+                    if(maxP instanceof Leaf && (max.compareTo(maxP.getKey()) < 0)){
+                        value -= maxP.getValue();
+                        weight -= maxP.getWeight();
+                    }
                     continue;
                 }
             }
@@ -274,7 +285,7 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
                         value -= p.getRight().getValue();
                         weight -= p.getRight().getWeight();
                     }
-                    if(maxP instanceof Leaf && !(maxP.getKey().equals(max))){
+                    if(maxP instanceof Leaf && !(max.compareTo(maxP.getKey()) < 0)){
                         value -= maxP.getValue();
                         weight -= maxP.getWeight();
                     }
@@ -296,26 +307,33 @@ public class Tree23<K extends Comparable<K>, T extends Nodeable<K>> {
         }
         while(minP instanceof InNode){
             InNode<K> p = (InNode<K>) minP;
-            if(p.getRight()!=null){
-                if(p.getRight().getKey().compareTo(min) <= 0){
-                    minP = p.getRight();
-                    value -= (p.getMiddle().getValue() + p.getLeft().getValue());
-                    weight -= (p.getMiddle().getWeight() + p.getLeft().getWeight());
+            if(p.getLeft()!= null){
+                if(min.compareTo(p.getLeft().getKey()) <= 0){
+                    minP = p.getLeft();
                     continue;
                 }
             }
-            if(p.getMiddle() != null){
-                if(p.getMiddle().getKey().compareTo(min) <= 0){
+            if(p.getMiddle()!=null){
+                if(min.compareTo(p.getMiddle().getKey()) <= 0){
                     minP = p.getMiddle();
                     value -= (p.getLeft().getValue());
                     weight -= (p.getLeft().getWeight());
                     continue;
                 }
             }
-            if(p.getLeft() != null){
-                minP = p.getLeft();
+            if(p.getRight()!=null){
+                if(min.compareTo(p.getRight().getKey()) <= 0){
+                    minP = p.getRight();
+                    value -= (p.getMiddle().getValue() + p.getLeft().getValue());
+                    weight -= (p.getMiddle().getWeight() + p.getLeft().getWeight());
+                    continue;
+                }
             }
+            weight -= p.getWeight();
+            value -= p.getValue();
+            break;
         }
+        if (weight == 0) return 0;
         return (int) Math.floor((value/weight));
     }
 }

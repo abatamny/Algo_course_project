@@ -11,13 +11,13 @@ public class Doctor implements Nodeable<String> {
     @Override
     public int getWeight(){return 1;}
     public void enterPatient(Patient p){
-        wd.push(p);
-        p.setPlace(wd.getHeadNode());
+        wd.insert(p);
+        p.setPlace(wd.getLastNode());
     }
     public Patient nextPatient() {
-            return wd.next();
+            return wd.peek();
     }
-    public Patient nextPatientLeave(){return wd.pop();}
+    public Patient nextPatientLeave(){return wd.remove();}
     public int waitingNum(){return wd.getSize();}
     @Override
     public float getValue(){

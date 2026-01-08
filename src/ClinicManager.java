@@ -38,7 +38,7 @@ public class ClinicManager {
         Doctor doc = doctors.getByKey(doctorId);//log(D)
 
         if(doc == null)
-            throw new IllegalArgumentException("his doctor is not exist.");
+            throw new IllegalArgumentException("this doctor is not exist.");
 
         Patient p = new Patient(patientId, doc);
         patients.insert(p);//log(P)
@@ -49,7 +49,11 @@ public class ClinicManager {
 
     public String nextPatientLeave(String doctorId) {
         Doctor doc = doctors.getByKey(doctorId);//log(D)
+        if(doc == null)
+            throw new IllegalArgumentException("this doctor is not exist.");
         Patient p = doc.nextPatientLeave();//O(1)
+        if(p == null)
+            throw new IllegalArgumentException("the waiting room of doctor is empty.");
         waitings.delete(p.getDoctor().waitingNum() + 1);//O(log D)
         patients.delete(p.getKey());//log(D)
         waitings.insert(new Waitings(p.getDoctor().waitingNum()));//O(log D)

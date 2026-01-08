@@ -1,53 +1,82 @@
 public class Queue<T>{
-    public class QNode<T>  {
-        private T obj;
-        public QNode<T> next = null;
-        public QNode<T> prev = null;
-        public Queue<T> parent;
-        public QNode(T key, Queue<T> p) {
+    public class QNode<K>  {
+        private K obj;
+        public QNode<K> next = null;
+        public QNode<K> prev = null;
+        public Queue<K> parent;
+        public QNode(K key, Queue<K> p) {
             this.obj = key;
             this.parent = p;
         }
 
         //if this node was in a linkedlist, then it can takes itself off.
         public void takeoff() {
-            QNode<T> p = this.prev;
-            QNode<T> n = this.next;
-            p.next = n;
-            n.prev = p;
-            this.parent.countDown();
+            QNode<K> p = this.prev;
+            QNode<K> n = this.next;
+            if(p == null && n == null){
+                //only node
+                this.parent.remove();
+            }
+            else if(p != null && n != null){
+                p.next = n;
+                n.prev = p;
+                this.parent.countDown();
+            }
+            else if(p == null){
+                this.parent.remove();
+            }
+            else{
+                this.parent.removeLast();
+            }
+            
         }
     }
 
 
     private QNode<T> head = null;
+    private QNode<T> tail = null;
+
     private int size = 0;
     public void countDown(){size--;}
-    public void push(T k) {
-        QNode<T> newHead = new QNode<>(k, this);
-        newHead.next = this.head;
-        if (this.head != null)
-            this.head.prev = newHead;
-        this.head = newHead;
+    public void insert(T element){
+        QNode<T> newTail = new QNode<>(element, this);
+        if (this.tail != null)
+            this.tail.next = newTail;
+        newTail.prev = this.tail;
+        if (this.head == null)
+            this.head = newTail;
+    
+        this.tail = newTail;
         this.size++;
     }
-
-    public T pop() {
+    public T remove(){
         if (head == null) throw new IllegalArgumentException("Empty Queue");
         T ret = this.head.obj;
-        this.head = this.head.next;
-        this.head.prev = null;
+        this.head = this.head.next; 
+        if (this.head != null)
+            this.head.prev = null;
+        else
+            this.tail = null;  
         this.size--;
         return ret;
     }
-
-    public QNode<T> getHeadNode() {
-        return this.head;
+   public void removeLast(){
+        if (tail == null) throw new IllegalArgumentException("Empty Queue");
+        this.tail = this.tail.prev;
+        if (this.tail != null)
+            this.tail.next = null;
+        else
+            this.head = null;
+        this.size--;
     }
 
-    public T next() {
-        if (head == null) throw new IllegalArgumentException("Empty Queue");
+    public T peek(){
+        if (tail == null) throw new IllegalArgumentException("Empty Queue");
         return this.head.obj;
+    }
+
+    public QNode<T> getLastNode(){
+        return this.tail;
     }
 
     public int getSize() {
