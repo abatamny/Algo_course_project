@@ -1,45 +1,47 @@
-public abstract class Node<T extends Comparable<T>>
-        implements Comparable<Node<T>>{
-    private T key;
-    private int weight = 0;
-    private Node<T> parent;
-    private int size = 0;
-    private float value = 0;
+public abstract class Node
+        implements Comparable<Node>{
+    private String key;
+    private Node parent;
 
-    public Node(T key){
+    private int weight = 0;
+    private int size = 0;
+
+    public Node(String key){
         this.key = key;
     }
 
-    public void setKey(T key){this.key = key;}
-    public T getKey(){return this.key;}
+    public void setKey(String key){this.key = key;}
+    public String getKey(){return this.key;}
 
-    public InNode<T> getParent(){return (InNode<T>)this.parent;}
-    public void setParent(Node<T> parent){this.parent = parent;}
+    public InNode getParent(){return (InNode)this.parent;}
+    public void setParent(Node parent){this.parent = parent;}
 
     public int getWeight(){return weight;}
-    public void setWeight(int w){weight = w;}
+    public void setWeight(int w){this.weight = w;}
+    public void addWeight(int toAdd){this.weight += toAdd;}
+    public abstract void updateWeight();
 
     public int getSize(){return this.size;}
-    public void setSize(int size){this.size = size;}
-
-    public float getValue(){return this.value;}
-    public void setValue(float v){this.value = v;}
+    public void increaseSize(){this.size++;}
+    public void decreaseSize(){this.size--;}
+    public void setSize(int newSize){this.size = newSize;}
+    public void addSize(int toAdd){this.size += toAdd;}
 
     @Override
-    public int compareTo(Node<T> other){
+    public int compareTo(Node other){
         int compareRes = this.key.compareTo(other.key);
         if(compareRes < 0) return -1;
         if(compareRes == 0) return 0;
         return 1;
     }
 
-    public int compareTo(T key){
+    public int compareTo(String key){
         int compareRes = this.key.compareTo(key);
         if(compareRes < 0) return -1;
         if(compareRes == 0) return 0;
         return 1;
     }
-    public boolean equals(Node<T> other){
+    public boolean equals(Node other){
         int compareRes = this.key.compareTo(other.key);
         return compareRes == 0 ? true : false;
     }

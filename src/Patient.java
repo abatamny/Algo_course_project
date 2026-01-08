@@ -1,4 +1,4 @@
-public class Patient implements Nodeable<String> {
+public class Patient implements Nodeable {
     private String PID;
     private Doctor doctor;
     private Queue<Patient>.QNode<Patient> place = null;
@@ -13,8 +13,7 @@ public class Patient implements Nodeable<String> {
     public Doctor getDoctor(){return doctor;}
     @Override
     public String getKey(){return PID;}
+
     @Override
-    public int getWeight(){return 1;}
-    @Override
-    public float getValue(){return 0;}
+    public int getValue(){return 0;}
 }

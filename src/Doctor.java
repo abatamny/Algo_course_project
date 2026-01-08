@@ -1,4 +1,4 @@
-public class Doctor implements Nodeable<String> {
+public class Doctor implements Nodeable ,Comparable<String> {
     private String DID;
     private Queue<Patient> wd;
 
@@ -8,8 +8,12 @@ public class Doctor implements Nodeable<String> {
     }
     @Override
     public String getKey(){return DID;}
+
     @Override
-    public int getWeight(){return 1;}
+    public int getValue(){
+        return 0;
+    }
+
     public void enterPatient(Patient p){
         wd.insert(p);
         p.setPlace(wd.getLastNode());
@@ -19,8 +23,10 @@ public class Doctor implements Nodeable<String> {
     }
     public Patient nextPatientLeave(){return wd.remove();}
     public int waitingNum(){return wd.getSize();}
+
+
     @Override
-    public float getValue(){
-        return 0;
+    public int compareTo(Doctor other){
+        return this.DID.compareTo(other.DID);
     }
 }

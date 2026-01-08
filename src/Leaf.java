@@ -1,31 +1,21 @@
-public class Leaf<T extends Comparable<T>,O extends Nodeable<T>> extends Node<T>{
+public class Leaf<O extends Nodeable<String>> extends Node{
 
     private final O obj;
 
-    public Leaf(T key, O obj){
+    public Leaf(String key, O obj){
         super(key);
         this.obj = obj;
-        setWeight(obj.getWeight());
-        setSize(1);
-        setValue(obj.getValue());
+        increaseSize();
     }
-
-    public Leaf(T key){
+    public Leaf(String key){
         super(key);
         this.obj = null;
-        setSize(0);
-        setValue(0);
+    }
+    public void updateWeight(){
+        this.setWeight(this.getSize() * this.obj().getValue());
     }
     public O obj(){return this.obj;}
 
-    @Override
-    public float getValue(){
-        if(obj != null)
-            return obj.getValue();
-        return 0;
-    }
 
-    @Override
-    public InNode<T> getParent() {return super.getParent();}
 }
 

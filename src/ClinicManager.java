@@ -3,7 +3,7 @@ public class ClinicManager {
     public static final String MAX_ID = "\uFFFF\uFFFF\uFFFF\uFFFF";
 
 
-    private Tree23<String, Doctor> doctors;
+    private TwoThreeTree<Doctor> doctors;
     private Tree23<String, Patient> patients;
     private Tree23<Integer, Waitings> waitings;
     public ClinicManager() {

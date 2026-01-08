@@ -1,5 +1,4 @@
-public interface Nodeable<K> {
-    public K getKey();
-    public int getWeight();
-    public float getValue();
+public interface Nodeable {
+    public String getKey();
+    public int getValue();
 }

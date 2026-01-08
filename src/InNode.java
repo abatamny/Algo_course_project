@@ -1,87 +1,106 @@
-public class InNode<T extends Comparable<T>> extends Node<T>{
-    private Node<T> left = null;
-    private Node<T> middle = null;
-    private Node<T> right = null;
+public class InNode extends Node{
+    private Node left = null;
+    private Node middle = null;
+    private Node right = null;
 
-    public InNode(T key){
+    public InNode(String key){
         super(key);
     }
-    public Node<T> getRight(){return this.right;}
-    public Node<T> getLeft(){return this.left;}
-    public Node<T> getMiddle(){return this.middle;}
+    public Node getRight(){return this.right;}
+    public Node getLeft(){return this.left;}
+    public Node getMiddle(){return this.middle;}
 
 
-    public void updateKey(){
-        T key = null;
-        int w = 0;
-        int size = 0;
-        int value = 0;
-        if(this.left != null) {
-            key = this.left.getKey();
-            w += this.left.getWeight();
-            size+= this.left.getSize();
-            value += this.left.getValue();
-        }
+    public void updateWeight(){
+        this.setWeight(this.left.getWeight());
+
         if(this.middle != null) {
-            key = this.middle.getKey();
-            w += this.middle.getWeight();
-            size += this.middle.getSize();
-            value += this.middle.getValue();
+            this.addWeight(this.middle.getWeight());
         }
+
         if(this.right != null) {
-            key = this.right.getKey();
-            w += this.right.getWeight();
-            size += this.right.getSize();
-            value += this.right.getValue();
+            this.addWeight(this.right.getWeight());
         }
+    }
+    public void updateSize(){
+        this.setSize(this.left.getSize());
+
+        if(this.middle != null) {
+            this.addSize(this.middle.getSize());
+        }
+
+        if(this.right != null) {
+            this.addSize(this.right.getSize());
+        }
+
+    }
+    public void updateKey(){
+        String key = this.left.getKey();
+
+        if(this.middle != null)
+            key = this.middle.getKey();
+
+        if(this.right != null)
+            key = this.right.getKey();
 
         this.setKey(key);
-        this.setWeight(w);
-        this.setSize(size);
-        this.setValue(value);
+
     }
-    public void setChildren(Node<T>l, Node<T>m, Node<T>r){
+    public void updateParameters(){
+        updateSize();
+        updateWeight();
+        updateKey();
+    }
+
+    public void setChildren(Node l, Node m, Node r){
         this.left = l;
         this.middle = m;
         this.right = r;
         l.setParent(this);
         if(m != null) m.setParent(this);
         if(r != null) r.setParent(this);
-        updateKey();
+        updateParameters();
     }
-    public Node<T> insertAndSplit(Node<T> z){
-        Node<T> l, m, r;
+    public void updateTillRoot(){
+        InNode current = this;
+        while(current != null){
+            current.updateParameters();
+            current = current.getParent();
+        }
+    }
+    public Node insertAndSplit(Node newNode ){
+        Node l, m, r;
         l = this.left;
         m = this.middle;
         r = this.right;
 
         if(r == null){
-            if(z.compareTo(l) < 0)
-                setChildren(z,l,m);
-            else if(z.compareTo(m) < 0)
-                setChildren(l,z,m);
+            if(newNode.compareTo(l) < 0)
+                setChildren(newNode,l,m);
+            else if(newNode.compareTo(m) < 0)
+                setChildren(l,newNode,m);
             else
-                setChildren(l,m,z);
+                setChildren(l,m,newNode);
             return null;
         }
 
-        InNode<T> y = new InNode<>(null);
-        if(z.compareTo(l) < 0){
-            this.setChildren(z,l,null);
-            y.setChildren(m,r,null);
+        InNode newSubTree = new InNode(null);
+        if(newNode.compareTo(l) < 0){
+            this.setChildren(newNode,l,null);
+            newSubTree.setChildren(m,r,null);
         }
-        else if(z.compareTo(m) < 0){
-            this.setChildren(l,z,null);
-            y.setChildren(m,r,null);
+        else if(newNode.compareTo(m) < 0){
+            this.setChildren(l,newNode,null);
+            newSubTree.setChildren(m,r,null);
         }
-        else if(z.compareTo(r) < 0){
+        else if(newNode.compareTo(r) < 0){
             this.setChildren(l,m,null);
-            y.setChildren(z,r,null);
+            newSubTree.setChildren(newNode,r,null);
         }
         else{
             this.setChildren(l,m,null);
-            y.setChildren(r,z,null);
+            newSubTree.setChildren(r,newNode,null);
         }
-        return y;
+        return newSubTree;
     }
 }
