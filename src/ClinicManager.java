@@ -4,17 +4,17 @@ public class ClinicManager {
 
 
     private TwoThreeTree<Doctor> doctors;
-    private Tree23<String, Patient> patients;
-    private Tree23<Integer, Waitings> waitings;
+    private TwoThreeTree<Patient> patients;
+    private TwoThreeTree<NodeableInteger> Statictics;
     public ClinicManager() {
-        doctors = new Tree23<>(MIN_ID, MAX_ID);
-        patients = new Tree23<>(MIN_ID, MAX_ID);
-        waitings = new Tree23<>(-1, Integer.MAX_VALUE);
+        doctors = new TwoThreeTree<>(MIN_ID, MAX_ID, 1);
+        patients = new TwoThreeTree<>(MIN_ID, MAX_ID, 1);
+        Statictics = new TwoThreeTree<>(MIN_ID, MAX_ID, -1);
     }
 
     public void doctorEnter(String doctorId) {
         Doctor newDoc = new Doctor(doctorId);
-        waitings.insert(new Waitings());
+        Statictics.insert(new NodeableInteger(0));
         try{
             doctors.insert(newDoc);
         }catch(IllegalArgumentException e){
@@ -31,7 +31,7 @@ public class ClinicManager {
             throw new IllegalArgumentException("can't leave: petients are waiting");
 
         doctors.delete(doctorId);
-        waitings.delete(0);
+        Statictics.delete("0");
     }
 
     public void patientEnter(String doctorId, String patientId) {
@@ -42,9 +42,9 @@ public class ClinicManager {
 
         Patient p = new Patient(patientId, doc);
         patients.insert(p);//log(P)
+        Statictics.insert(new NodeableInteger(doc.waitingNum()));
         doc.enterPatient(p);
-        waitings.delete(doc.waitingNum()-1);
-        waitings.insert(new Waitings(doc.waitingNum()));
+        Statictics.insert(new NodeableInteger(doc.waitingNum()));
     }
 
     public String nextPatientLeave(String doctorId) {
@@ -54,9 +54,9 @@ public class ClinicManager {
         Patient p = doc.nextPatientLeave();//O(1)
         if(p == null)
             throw new IllegalArgumentException("the waiting room of doctor is empty.");
-        waitings.delete(p.getDoctor().waitingNum() + 1);//O(log D)
+        Statictics.delete(new Integer(p.getDoctor().waitingNum() + 1).toString());//O(log D)
         patients.delete(p.getKey());//log(D)
-        waitings.insert(new Waitings(p.getDoctor().waitingNum()));//O(log D)
+        Statictics.insert(new NodeableInteger(p.getDoctor().waitingNum()));//O(log D)
         return p.getKey();
     }
 
@@ -64,10 +64,10 @@ public class ClinicManager {
         Patient p = patients.getByKey(patientId);
         if(p == null) throw new IllegalArgumentException("patient does not exists.");
 
-        waitings.delete(p.getDoctor().waitingNum());//O(log D)
+        Statictics.delete(new Integer(p.getDoctor().waitingNum()).toString());//O(log D)
         p.getPlace().takeoff();//O(1) remove from the waiting queue.
         patients.delete(p.getKey());//O(log(P)
-        waitings.insert(new Waitings(p.getDoctor().waitingNum()));//O(log D)
+        Statictics.insert(new NodeableInteger(p.getDoctor().waitingNum()));//O(log D)
     }
 
     public int numPatients(String doctorId){
@@ -93,10 +93,11 @@ public class ClinicManager {
     }
 
     public int numDoctorsWithLoadInRange(int low, int high) {
-        return waitings.weightInRange(low,high);
+        return Statictics.inRngeGetWeightAndSize(new Integer(low).toString(),new Integer(high).toString())[0];
     }
 
     public int averageLoadWithinRange(int low, int high) {
-        return (int) waitings.averageValueInRange(low, high);
+        int[] vals = Statictics.inRngeGetWeightAndSize(new Integer(low).toString(),new Integer(high).toString());
+        return (int) Math.floor(vals[0]/vals[1]);
     }
 }
