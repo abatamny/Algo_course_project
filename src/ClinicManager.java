@@ -31,7 +31,7 @@ public class ClinicManager {
             throw new IllegalArgumentException("can't leave: petients are waiting");
 
         doctors.delete(doctorId);
-        Statictics.delete("0");
+        Statictics.delete(new NodeableInteger(0).getKey());
     }
 
     public void patientEnter(String doctorId, String patientId) {
@@ -42,7 +42,7 @@ public class ClinicManager {
 
         Patient p = new Patient(patientId, doc);
         patients.insert(p);//log(P)
-        Statictics.insert(new NodeableInteger(doc.waitingNum()));
+        Statictics.delete(new NodeableInteger(doc.waitingNum()).getKey());//O(log D)
         doc.enterPatient(p);
         Statictics.insert(new NodeableInteger(doc.waitingNum()));
     }
@@ -54,7 +54,7 @@ public class ClinicManager {
         Patient p = doc.nextPatientLeave();//O(1)
         if(p == null)
             throw new IllegalArgumentException("the waiting room of doctor is empty.");
-        Statictics.delete(new Integer(p.getDoctor().waitingNum() + 1).toString());//O(log D)
+        Statictics.delete(new NodeableInteger(p.getDoctor().waitingNum() + 1).getKey());//O(log D)
         patients.delete(p.getKey());//log(D)
         Statictics.insert(new NodeableInteger(p.getDoctor().waitingNum()));//O(log D)
         return p.getKey();
@@ -64,7 +64,7 @@ public class ClinicManager {
         Patient p = patients.getByKey(patientId);
         if(p == null) throw new IllegalArgumentException("patient does not exists.");
 
-        Statictics.delete(new Integer(p.getDoctor().waitingNum()).toString());//O(log D)
+        Statictics.delete(new NodeableInteger(p.getDoctor().waitingNum()).getKey());//O(log D)
         p.getPlace().takeoff();//O(1) remove from the waiting queue.
         patients.delete(p.getKey());//O(log(P)
         Statictics.insert(new NodeableInteger(p.getDoctor().waitingNum()));//O(log D)
@@ -93,11 +93,12 @@ public class ClinicManager {
     }
 
     public int numDoctorsWithLoadInRange(int low, int high) {
-        return Statictics.inRngeGetWeightAndSize(new Integer(low).toString(),new Integer(high).toString())[0];
+        return Statictics.inRangeGetWeightAndSize(new NodeableInteger(low).getKey(),new NodeableInteger(high).getKey())[1];
     }
 
     public int averageLoadWithinRange(int low, int high) {
-        int[] vals = Statictics.inRngeGetWeightAndSize(new Integer(low).toString(),new Integer(high).toString());
+        int[] vals = Statictics.inRangeGetWeightAndSize(new NodeableInteger(low).getKey(),new NodeableInteger(high).getKey());
+        if(vals[1] == 0)return 0;
         return (int) Math.floor(vals[0]/vals[1]);
     }
 }

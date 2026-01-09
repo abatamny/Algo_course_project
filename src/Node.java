@@ -29,23 +29,19 @@ public abstract class Node
 
     @Override
     public int compareTo(Node other){
-        int compareRes = this.key.compareTo(other.key);
-        if(compareRes < 0) return -1;
-        if(compareRes == 0) return 0;
-        return 1;
+        return this.key.compareTo(other.key);
     }
 
     public int compareTo(String key){
-        int compareRes = this.key.compareTo(key);
-        if(compareRes < 0) return -1;
-        if(compareRes == 0) return 0;
-        return 1;
+        return this.key.compareTo(key);
     }
     public boolean equals(Node other){
         int compareRes = this.key.compareTo(other.key);
         return compareRes == 0 ? true : false;
     }
-
+    public boolean equals(String key){
+        return this.key.equals(key);
+    }
     @Override
     public String toString() {
         return this.key.toString();

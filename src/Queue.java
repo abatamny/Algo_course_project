@@ -35,8 +35,8 @@ public class Queue<T>{
 
     private QNode<T> head = null;
     private QNode<T> tail = null;
-
     private int size = 0;
+
     public void countDown(){size--;}
     public void insert(T element){
         QNode<T> newTail = new QNode<>(element, this);

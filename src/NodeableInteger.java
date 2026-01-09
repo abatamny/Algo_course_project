@@ -4,7 +4,10 @@ public class NodeableInteger implements Nodeable{
         this.key = key;
     }
     @Override
-    public String getKey(){return key.toString();}
+    public String getKey(){
+        long shifted = ((long) key) - (long) Integer.MIN_VALUE; // 0 .. 4294967295
+        return String.format("%010d", shifted);
+    }
 
     @Override
     public int getValue(){return key;}

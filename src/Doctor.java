@@ -1,4 +1,4 @@
-public class Doctor implements Nodeable ,Comparable<String> {
+public class Doctor implements Nodeable {
     private String DID;
     private Queue<Patient> wd;
 
@@ -24,9 +24,4 @@ public class Doctor implements Nodeable ,Comparable<String> {
     public Patient nextPatientLeave(){return wd.remove();}
     public int waitingNum(){return wd.getSize();}
 
-
-    @Override
-    public int compareTo(Doctor other){
-        return this.DID.compareTo(other.DID);
-    }
 }

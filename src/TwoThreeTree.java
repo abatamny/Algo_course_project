@@ -26,19 +26,34 @@ public class TwoThreeTree <T extends Nodeable>{
         return null;
     }
     /* returns the object if founded, else the previous leaf.*/
-    private Leaf<T> leafSearch(String key){
+    public Leaf<T> leafSearch(String key){
         Node pointer = this.root;
         while (pointer instanceof InNode) {
             InNode _pointer = (InNode) pointer;
+
             if (key.compareTo(_pointer.getLeft().getKey()) <= 0) {
                 pointer = _pointer.getLeft();
-            } else if ((key.compareTo(_pointer.getMiddle().getKey()) <= 0)){
-                pointer = _pointer.getMiddle();
+                continue;
+
             }
-            else {
+            if(_pointer.getMiddle() != null) {
+                if ((key.compareTo(_pointer.getMiddle().getKey()) <= 0)) {
+                    pointer = _pointer.getMiddle();
+                    continue;
+                }
+            }
+
+            if(_pointer.getRight() != null){
                 pointer = _pointer.getRight();
             }
+            else if(_pointer.getMiddle() != null){
+                pointer = _pointer.getMiddle();
+            }
+            else
+                pointer = _pointer.getLeft();
+
         }
+
         return (Leaf<T>) pointer;
     }
 
@@ -48,7 +63,7 @@ public class TwoThreeTree <T extends Nodeable>{
         Leaf<T> founded = leafSearch(newKey);
 
         if(founded.equals(newKey)){
-            if(this.leafMaxWeight > -1){
+            if(this.leafMaxWeight == -1){
                 founded.increaseSize();
                 founded.updateWeight();
                 founded.getParent().updateTillRoot();
@@ -68,7 +83,7 @@ public class TwoThreeTree <T extends Nodeable>{
             else
                 currentsubTree.updateParameters();
         }
-        if(currentsubTree != null){
+        if(newSubTree != null){
             InNode newRoot = new InNode(null);
             newRoot.setChildren(currentsubTree,newSubTree,null);
             this.root = newRoot;
@@ -114,13 +129,14 @@ public class TwoThreeTree <T extends Nodeable>{
     }
     public void deleteLeaf(Leaf<T> leaf){
 
-        if(leaf.obj() instanceof Insertable)
-            if (leaf.getSize() > 1){
+        if(this.leafMaxWeight == -1) {
+            if (leaf.getSize() > 1) {
                 leaf.decreaseSize();
                 leaf.updateWeight();
                 leaf.getParent().updateTillRoot();
                 return;
             }
+        }
         InNode currentSubTree = leaf.getParent();
 
 
@@ -133,7 +149,7 @@ public class TwoThreeTree <T extends Nodeable>{
 
         while (currentSubTree != null){
             if(currentSubTree.getMiddle() != null){
-                currentSubTree.updateKey();
+                currentSubTree.updateParameters();
                 currentSubTree = currentSubTree.getParent();
             }
             else{
@@ -150,62 +166,109 @@ public class TwoThreeTree <T extends Nodeable>{
     }
     public void delete(String key){
         Leaf<T> leaf = leafSearch(key);
-        if(leaf == null || !leaf.equals(key))
+        if(leaf == null || !(leaf.equals(key)))
             throw new IllegalArgumentException("the key '" + key + "' does not exists.");
 
         deleteLeaf(leaf);
     }
 
-    public int[] inRngeGetWeightAndSize(String min, String max) {
-        Node current = this.root;
+    public int[] inRangeGetWeightAndSize(String min, String max) {
+        if (root == null) return new int[]{0, 0};
+        if (min.compareTo(max) > 0) return new int[]{0, 0};
 
-        Pair currentValues = new Pair(current.getWeight(), current.getSize());
-        while (current instanceof InNode) {
-            InNode temp = (InNode) current;
+        int[] leMax = prefixLessOrEqual(max); // <= max
+        int []ltMin = prefixLessThan(min);    // <  min
 
-            if (temp.getLeft().compareTo(min) >= 0)
-                current = temp.getLeft();
-
-            else if (temp.getMiddle() != null) {
-                if (temp.getMiddle().compareTo(min) >= 0) {
-                    currentValues.mines(temp.getLeft().getWeight(), temp.getLeft().getSize());
-                    current = temp.getMiddle();
-                }
-            } else if (temp.getRight() != null) {
-                if (temp.getRight().compareTo(min) >= 0) {
-                    currentValues.mines(temp.getMiddle().getWeight(), temp.getMiddle().getSize());
-                    currentValues.mines(temp.getLeft().getWeight(), temp.getLeft().getSize());
-                    current = temp.getRight();
-                }
-            }
-        }
-        if (current.getKey().compareTo(min) < 0)
-            currentValues.mines(current.getWeight(), current.getSize());
-
-        current = this.root;
-        while (current instanceof InNode) {
-            InNode temp = (InNode) current;
-
-            if (temp.getRight() != null) {
-                if (temp.getRight().compareTo(max) <= 0) {
-                    current = temp.getRight();
-                }
-            }
-            if(temp.getMiddle() != null){
-                if(temp.getMiddle().compareTo(max) <= 0){
-                    currentValues.mines(temp.getRight().getWeight(), temp.getRight().getSize());
-                    current = temp.getMiddle();
-                }
-            }
-
-            currentValues.mines(temp.getMiddle().getWeight(), temp.getMiddle().getSize());
-            currentValues.mines(temp.getRight().getWeight(), temp.getRight().getSize());
-            current = temp.getLeft();
-        }
-        if (current.getKey().compareTo(max) > 0)
-            currentValues.mines(current.getWeight(), current.getSize());
-
-        return new int[] {currentValues.first, currentValues.second};
+        return new int[] { leMax[0] - ltMin[0], leMax[1] - ltMin[1] };
     }
+
+    private int[] prefixLessOrEqual(String key) {
+        int w = 0, s = 0;
+        Node cur = root;
+
+        while (cur instanceof InNode) {
+            InNode p = (InNode) cur;
+
+            Node left = p.getLeft();
+            Node middle = p.getMiddle();
+            Node right = p.getRight();
+
+            if (key.compareTo(left.getKey()) <= 0) {
+                cur = left;
+                continue;
+            }
+
+            w += left.getWeight();
+            s += left.getSize();
+
+            if (middle == null) {
+                cur = left;
+                continue;
+            }
+
+            if (key.compareTo(middle.getKey()) <= 0) {
+                cur = middle;
+                continue;
+            }
+
+            w += middle.getWeight();
+            s += middle.getSize();
+
+            cur = (right != null) ? right : middle;
+        }
+
+        Leaf leaf = (Leaf) cur;
+        if (leaf.getKey().compareTo(key) <= 0) {
+            w += leaf.getWeight();
+            s += leaf.getSize();
+        }
+
+        return new int[]{w, s};
+    }
+
+    private int[] prefixLessThan(String key) {
+        int w = 0, s = 0;
+        Node cur = root;
+
+        while (cur instanceof InNode) {
+            InNode p = (InNode) cur;
+
+            Node left = p.getLeft();
+            Node middle = p.getMiddle();
+            Node right = p.getRight();
+
+            if (key.compareTo(left.getKey()) <= 0) {
+                cur = left;
+                continue;
+            }
+
+            w += left.getWeight();
+            s += left.getSize();
+
+            if (middle == null) {
+                cur = left;
+                continue;
+            }
+
+            if (key.compareTo(middle.getKey()) <= 0) {
+                cur = middle;
+                continue;
+            }
+
+            w += middle.getWeight();
+            s += middle.getSize();
+
+            cur = (right != null) ? right : middle;
+        }
+
+        Leaf leaf = (Leaf) cur;
+        if (leaf.getKey().compareTo(key) < 0) {
+            w += leaf.getWeight();
+            s += leaf.getSize();
+        }
+
+        return new int[]{w, s};
+    }
+
 
 }
