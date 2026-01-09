@@ -14,12 +14,12 @@ public class ClinicManager {
 
     public void doctorEnter(String doctorId) {
         Doctor newDoc = new Doctor(doctorId);
-        Statictics.insert(new NodeableInteger(0));
         try{
             doctors.insert(newDoc);
         }catch(IllegalArgumentException e){
             throw new IllegalArgumentException("the doctor is already exists.");
         }
+        Statictics.insert(new NodeableInteger(0));
     }
 
     public void doctorLeave(String doctorId) {

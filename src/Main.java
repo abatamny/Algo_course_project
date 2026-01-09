@@ -66,7 +66,6 @@ public class Main {
             System.out.println("--- PPR11 ---");
             System.out.println("TEST CRASHED: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
-
         try {
             test1();
         } catch (Exception e) {
